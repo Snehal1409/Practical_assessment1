@@ -17,3 +17,5 @@ EXPOSE 4499
 
 CMD ["/app/wisecow.sh"]
 
+
+
