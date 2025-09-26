@@ -1,0 +1,27 @@
+apiVersion: security.kubearmor.com/v1
+kind: KubeArmorPolicy
+metadata:
+  name: wisecow-zero-trust
+  namespace: wisecow
+spec:
+  severity: 9
+  selector:
+    matchLabels:
+      app: wisecow
+  # Block dangerous / interactive shells and package managers from executing
+  process:
+    matchPaths:
+      - path: /bin/sh
+      - path: /bin/bash
+      - path: /usr/bin/sh
+      - path: /usr/sbin/chroot
+      - path: /usr/bin/apt
+      - path: /usr/bin/apt-get
+      - path: /sbin/apk
+  # Block read access to the mounted serviceaccount token (prevent token theft)
+  file:
+    matchPaths:
+      - path: /var/run/secrets/kubernetes.io/serviceaccount/token
+  # Deny actions that match the `process` or `file` rules
+  action: Block
+
